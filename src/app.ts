@@ -10,7 +10,7 @@ const app = express()
 
 // middleware
 app.use(cors({
-    origin: ["http://localhost:3000","http://localhost:5173","http://localhost:5174","https://mrsoho-dashboard.vercel.app/"],
+    origin: ["http://localhost:3000","http://localhost:5173","http://localhost:5174","https://mrsoho-dashboard.vercel.app"],
     credentials: true,
 }))
 app.use(express.json({ limit: "100mb" }))
