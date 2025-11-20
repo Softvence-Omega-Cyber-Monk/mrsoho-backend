@@ -36,7 +36,7 @@ app.get('/', (req: Request, res: Response) => {
 export const createDefaultSuperAdmin = async () => {
   try {
     const existingAdmin = await Account_Model.findOne({
-      email: "mohit.naren@gmail.com",
+      email: "admin@gmail.com",
     });
 
     const hashedPassword = await bcrypt.hash(
