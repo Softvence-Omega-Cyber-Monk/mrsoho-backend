@@ -8,7 +8,7 @@ const userRoute = Router()
 
 userRoute.patch(
     "/update-profile",
-    auth("ADMIN","USER"),
+    auth("ADMIN"),
     uploader.single("image"),
     (req: Request, res: Response, next: NextFunction) => {
         req.body = user_validations.update_user.parse(JSON.parse(req?.body?.data))

@@ -10,8 +10,7 @@ const authSchema = new Schema<TAccount>(
     accountStatus: { type: String, default: "ACTIVE" },
     role: {
       type: String,
-      enum: ["USER", "ADMIN", "VOLUNTEER", "CLINICIAN"],
-      default: "USER",
+      enum: ["ADMIN"],
     },
     isVerified: { type: Boolean, default: false },
   },
