@@ -11,14 +11,14 @@ authRoute.post("/login", RequestValidator(auth_validation.login_validation), aut
 
 authRoute.get(
     '/me',
-    auth("ADMIN", "USER"),
+    auth("ADMIN"),
     auth_controllers.get_my_profile,
 );
 
 authRoute.post('/refresh-token', auth_controllers.refresh_token);
 authRoute.post(
     '/change-password',
-    auth("ADMIN", "USER"),
+    auth("ADMIN"),
     RequestValidator(auth_validation.changePassword),
     auth_controllers.change_password,
 );

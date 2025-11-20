@@ -4,6 +4,10 @@ import globalErrorHandler from './app/middlewares/global_error_handler'
 import notFound from './app/middlewares/not_found_api'
 import cookieParser from 'cookie-parser'
 import appRouter from './routes'
+import bcrypt from 'bcrypt';
+import { Account_Model } from './app/modules/auth/auth.schema';
+import { configs } from './app/configs';
+import { User_Model } from './app/modules/user/user.schema';
 
 // define app
 const app = express()
@@ -27,6 +31,46 @@ app.get('/', (req: Request, res: Response) => {
         data: null,
     });
 });
+
+// Create Default SuperAdmin if not exists
+export const createDefaultSuperAdmin = async () => {
+  try {
+    const existingAdmin = await Account_Model.findOne({
+      email: "mohit.naren@gmail.com",
+    });
+
+    const hashedPassword = await bcrypt.hash(
+      "Admin@1234", // Default password for Admin
+      Number(configs.bcrypt.salt_rounds) // Ensure bcrypt_salt_rounds is correctly pulled from config
+    );
+
+    if (!existingAdmin) {
+      const newAccount = await Account_Model.create({
+        name: "Soho",
+        email: "admin@gmail.com",
+        password: hashedPassword,
+        confirmPassword: hashedPassword,
+        role: "ADMIN",
+        country: "Global",
+        isVerified: true,
+      });
+      // Create user associated with the account
+      const userPayload = {
+        name: "Soho", // Use the same name from account
+        accountId: newAccount._id, // Use the created account's ID
+      };
+      
+      await User_Model.create(userPayload);
+      console.log("✅ Default Admin created.");
+    } else {
+      console.log("ℹ️ SAdmin already exists.");
+    }
+  } catch (error) {
+    console.error("❌ Failed to create Default Admin:", error);
+  }
+};
+
+createDefaultSuperAdmin();
 
 // global error handler
 app.use(globalErrorHandler);

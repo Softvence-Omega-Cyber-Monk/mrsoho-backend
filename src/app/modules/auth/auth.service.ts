@@ -134,29 +134,63 @@ const get_my_profile_from_db = async (email: string) => {
     };
 };
 
+// const refresh_token_from_db = async (token: string) => {
+//     let decodedData;
+//     try {
+//         decodedData = jwtHelpers.verifyToken(
+//             token,
+//             configs.jwt.refresh_token as Secret,
+//         );
+//     } catch (err) {
+//         throw new Error('You are not authorized!');
+//     }
+
+//     const userData = await Account_Model.findOne({ email: decodedData.email, status: "ACTIVE", isDeleted: false })
+
+//     const accessToken = jwtHelpers.generateToken(
+//         {
+//             email: userData!.email,
+//             role: userData!.role,
+//         },
+//         configs.jwt.access_token as Secret,
+//         configs.jwt.access_expires as string,
+//     );
+
+//     return accessToken;
+// };
+
 const refresh_token_from_db = async (token: string) => {
-    let decodedData;
-    try {
-        decodedData = jwtHelpers.verifyToken(
-            token,
-            configs.jwt.refresh_token as Secret,
-        );
-    } catch (err) {
-        throw new Error('You are not authorized!');
-    }
-
-    const userData = await Account_Model.findOne({ email: decodedData.email, status: "ACTIVE", isDeleted: false })
-
-    const accessToken = jwtHelpers.generateToken(
-        {
-            email: userData!.email,
-            role: userData!.role,
-        },
-        configs.jwt.access_token as Secret,
-        configs.jwt.access_expires as string,
+  let decodedData;
+  try {
+    decodedData = jwtHelpers.verifyToken(
+      token,
+      configs.jwt.refresh_token as Secret
     );
+  } catch (err) {
+    throw new AppError("You are not authorized!", httpStatus.UNAUTHORIZED);
+  }
 
-    return accessToken;
+  // Check if token payload is valid
+  if (!decodedData || !decodedData.email) {
+    throw new AppError("Invalid token payload!", httpStatus.BAD_REQUEST);
+  }
+
+  const userData = await Account_Model.findOne({
+    email: decodedData.email,
+    accountStatus: "ACTIVE",
+    isDeleted: false,
+  });
+
+  const accessToken = jwtHelpers.generateToken(
+    {
+      email: userData!.email,
+      role: userData!.role,
+    },
+    configs.jwt.access_token as Secret,
+    configs.jwt.access_expires as string
+  );
+
+  return accessToken;
 };
 
 const change_password_from_db = async (
