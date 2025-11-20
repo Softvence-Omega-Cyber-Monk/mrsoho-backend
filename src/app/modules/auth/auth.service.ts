@@ -219,28 +219,53 @@ const change_password_from_db = async (
     return 'Password changed successful.';
 };
 
+// const forget_password_from_db = async (email: string) => {
+//     const isAccountExists = await isAccountExist(email)
+//     const resetToken = jwtHelpers.generateToken(
+//         {
+//             email: isAccountExists.email,
+//             role: isAccountExists.role,
+//         },
+//         configs.jwt.reset_secret as Secret,
+//         configs.jwt.reset_expires as string,
+//     );
+
+//     const resetPasswordLink = `${configs.jwt.front_end_url}/reset?token=${resetToken}&email=${isAccountExists.email}`;
+//     const emailTemplate = `<p>Click the link below to reset your password:</p><a href="${resetPasswordLink}">Reset Password</a>`;
+
+//     await sendMail({
+//         to: email,
+//         subject: "Password reset successful!",
+//         textBody: "Your password is successfully reset.",
+//         htmlBody: emailTemplate
+//     });
+
+//     return 'Check your email for reset link';
+// };
+
+
 const forget_password_from_db = async (email: string) => {
-    const isAccountExists = await isAccountExist(email)
-    const resetToken = jwtHelpers.generateToken(
-        {
-            email: isAccountExists.email,
-            role: isAccountExists.role,
-        },
-        configs.jwt.reset_secret as Secret,
-        configs.jwt.reset_expires as string,
-    );
+  const isAccountExists = await isAccountExist(email);
+  const resetToken = jwtHelpers.generateToken(
+    {
+      email: isAccountExists.email,
+      role: isAccountExists.role,
+    },
+    configs.jwt.reset_secret as Secret,
+    configs.jwt.reset_expires as string
+  );
 
-    const resetPasswordLink = `${configs.jwt.front_end_url}/reset?token=${resetToken}&email=${isAccountExists.email}`;
-    const emailTemplate = `<p>Click the link below to reset your password:</p><a href="${resetPasswordLink}">Reset Password</a>`;
+  const resetPasswordLink = `${configs.jwt.front_end_url}/reset?token=${resetToken}&email=${isAccountExists.email}`;
+  const emailTemplate = `<p>Click the link below to reset your password:</p><a href="${resetPasswordLink}">Reset Password</a>`;
 
-    await sendMail({
-        to: email,
-        subject: "Password reset successful!",
-        textBody: "Your password is successfully reset.",
-        htmlBody: emailTemplate
-    });
+  await sendMail({
+    to: email,
+    subject: "Password reset successful!",
+    textBody: "Your password is successfully reset.",
+    htmlBody: emailTemplate,
+  });
 
-    return 'Check your email for reset link';
+  return "Check your email for reset link";
 };
 
 const reset_password_into_db = async (
