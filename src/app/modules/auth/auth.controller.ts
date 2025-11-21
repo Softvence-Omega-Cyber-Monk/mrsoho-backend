@@ -79,11 +79,13 @@ const forget_password = catchAsync(async (req, res) => {
 
 const reset_password = catchAsync(async (req, res) => {
     const { token, newPassword, email } = req.body;
+    console.log("token:", token);
     const result = await auth_services.reset_password_into_db(
         token,
         email,
         newPassword,
     );
+    console.log("result:", result);
     manageResponse(res, {
         statusCode: httpStatus.OK,
         success: true,

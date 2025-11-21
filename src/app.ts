@@ -33,44 +33,44 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 // Create Default SuperAdmin if not exists
-export const createDefaultSuperAdmin = async () => {
-  try {
-    const existingAdmin = await Account_Model.findOne({
-      email: "rimelchowdhury01@gmail.com",
-    });
+// export const createDefaultSuperAdmin = async () => {
+//   try {
+//     const existingAdmin = await Account_Model.findOne({
+//       email: "rimelchowdhury01@gmail.com",
+//     });
 
-    const hashedPassword = await bcrypt.hash(
-      "Admin@1234", // Default password for Admin
-      Number(configs.bcrypt.salt_rounds) // Ensure bcrypt_salt_rounds is correctly pulled from config
-    );
+//     const hashedPassword = await bcrypt.hash(
+//       "Admin@1234", // Default password for Admin
+//       Number(configs.bcrypt.salt_rounds) // Ensure bcrypt_salt_rounds is correctly pulled from config
+//     );
 
-    if (!existingAdmin) {
-      const newAccount = await Account_Model.create({
-        name: "Soho",
-        email: "rimelchowdhury01@gmail.com",
-        password: hashedPassword,
-        confirmPassword: hashedPassword,
-        role: "ADMIN",
-        country: "Global",
-        isVerified: true,
-      });
-      // Create user associated with the account
-      const userPayload = {
-        name: "Soho", // Use the same name from account
-        accountId: newAccount._id, // Use the created account's ID
-      };
+//     if (!existingAdmin) {
+//       const newAccount = await Account_Model.create({
+//         name: "Soho",
+//         email: "rimelchowdhury01@gmail.com",
+//         password: hashedPassword,
+//         confirmPassword: hashedPassword,
+//         role: "ADMIN",
+//         country: "Global",
+//         isVerified: true,
+//       });
+//       // Create user associated with the account
+//       const userPayload = {
+//         name: "Soho", // Use the same name from account
+//         accountId: newAccount._id, // Use the created account's ID
+//       };
       
-      await User_Model.create(userPayload);
-      console.log("✅ Default Admin created.");
-    } else {
-      console.log("ℹ️ SAdmin already exists.");
-    }
-  } catch (error) {
-    console.error("❌ Failed to create Default Admin:", error);
-  }
-};
+//       await User_Model.create(userPayload);
+//       console.log("✅ Default Admin created.");
+//     } else {
+//       console.log("ℹ️ SAdmin already exists.");
+//     }
+//   } catch (error) {
+//     console.error("❌ Failed to create Default Admin:", error);
+//   }
+// };
 
-createDefaultSuperAdmin();
+// createDefaultSuperAdmin();
 
 // global error handler
 app.use(globalErrorHandler);
