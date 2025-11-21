@@ -3,40 +3,10 @@ import { ContactService } from "./contact.service";
 import { IContact } from "./contact.interface";
 import { validateTurnstile } from "../../utils/turnstile";
 
-const submitContact = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const contactData: IContact = req.body;
-
-    if (!contactData.name || !contactData.email || !contactData.message) {
-      res.status(400).json({
-        success: false,
-        message: "Name, email, and message are required fields",
-      });
-      return;
-    }
-
-    // await ContactService.saveContact(contactData);
-    await ContactService.sendContactEmail(contactData);
-
-    res.status(201).json({
-      success: true,
-      message: "Contact form submitted successfully",
-    });
-  } catch (error) {
-    console.error("Error submitting contact form:", error);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error while submitting contact form",
-    });
-  }
-};
-
-
 // const submitContact = async (req: Request, res: Response): Promise<void> => {
 //   try {
-//     const contactData: IContact & { "cf-turnstile-response": string } = req.body;
+//     const contactData: IContact = req.body;
 
-//     // 1️⃣ Check required fields
 //     if (!contactData.name || !contactData.email || !contactData.message) {
 //       res.status(400).json({
 //         success: false,
@@ -45,26 +15,6 @@ const submitContact = async (req: Request, res: Response): Promise<void> => {
 //       return;
 //     }
 
-//     // 2️⃣ Verify Turnstile token
-//     const token = contactData["cf-turnstile-response"];
-//     if (!token) {
-//       res.status(400).json({
-//         success: false,
-//         message: "Turnstile token is missing",
-//       });
-//       return;
-//     }
-
-//     const isValid = await validateTurnstile(token);
-//     if (!isValid) {
-//       res.status(400).json({
-//         success: false,
-//         message: "Turnstile verification failed",
-//       });
-//       return;
-//     }
-
-//     // 3️⃣ Save contact and send email
 //     // await ContactService.saveContact(contactData);
 //     await ContactService.sendContactEmail(contactData);
 
@@ -80,6 +30,56 @@ const submitContact = async (req: Request, res: Response): Promise<void> => {
 //     });
 //   }
 // };
+
+
+const submitContact = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const contactData: IContact & { "cf-turnstile-response": string } = req.body;
+
+    // 1️⃣ Check required fields
+    if (!contactData.name || !contactData.email || !contactData.message) {
+      res.status(400).json({
+        success: false,
+        message: "Name, email, and message are required fields",
+      });
+      return;
+    }
+
+    // 2️⃣ Verify Turnstile token
+    const token = contactData["cf-turnstile-response"];
+    if (!token) {
+      res.status(400).json({
+        success: false,
+        message: "Turnstile token is missing",
+      });
+      return;
+    }
+
+    const isValid = await validateTurnstile(token);
+    if (!isValid) {
+      res.status(400).json({
+        success: false,
+        message: "Turnstile verification failed",
+      });
+      return;
+    }
+
+    // 3️⃣ Save contact and send email
+    // await ContactService.saveContact(contactData);
+    await ContactService.sendContactEmail(contactData);
+
+    res.status(201).json({
+      success: true,
+      message: "Contact form submitted successfully",
+    });
+  } catch (error) {
+    console.error("Error submitting contact form:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error while submitting contact form",
+    });
+  }
+};
 
 /**
  * Get all contacts with pagination
