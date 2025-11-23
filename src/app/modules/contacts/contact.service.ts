@@ -84,7 +84,7 @@ const saveContact = async (payload: IContact) => {
 const sendContactEmail = async (payload: IContact) => {
   await sendMail({
     // to: "Orders@gatormix.com", // Your email where messages will arrive
-    to: "gatormix.com@gmail.com",
+    to: "Orders@gatormix.com",
     subject: `New Contact Form Submission - ${payload.subject || "No Subject"}`,
     textBody: payload.message,
     name: payload.name,
