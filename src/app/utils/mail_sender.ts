@@ -124,7 +124,7 @@ const transporter = nodemailer.createTransport({
 // ✅ Email Sender Function
 const sendMail = async (payload: TMailContent) => {
     const info = await transporter.sendMail({
-        from: 'info@gatormix.com', // Changed to your domain
+        from: 'rimelchowdhury01@gmail.com', // Changed to your domain
         to: payload.to,
         subject: payload.subject,
         text: payload.textBody,
